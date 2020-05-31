@@ -212,7 +212,7 @@ module.exports = function (app, collection) {
         pushValue = {}
         pushValue[`ledgers.${req.body.ledgerName}`] = { timestamp: new Date(), balance: parseInt(req.body.newBalance) }
 
-        collction.update({ customerAccountId: req.body.customerAccountId }, { '$push': pushValue }, (err, results) => {
+        collection.update({ customerAccountId: req.body.customerAccountId }, { '$push': pushValue }, (err, results) => {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
             } else {
