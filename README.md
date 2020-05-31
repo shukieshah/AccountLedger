@@ -41,11 +41,13 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
   * **Content:** 
   
-  ```[
+  ```
+    [
         { "customerAccountId": "abcd1234" }, 
         { "customerAccountId": "12345" }, 
         { "customerAccountId": "abc12345" }
-    ]```
+    ]
+  ```
  
 * **Error Response:**
 
