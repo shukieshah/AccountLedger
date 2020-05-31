@@ -201,8 +201,10 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
    **Required:**
  
-   `customerAccountId=[Unique String ID]`
-   `ledgerName=[String]`
+   ```
+   customerAccountId=[Unique String ID]
+   ledgerName=[String]
+   ```
 
 * **Success Response:**
 
@@ -241,10 +243,12 @@ Open http://localhost:3000 to test the endpoints in the browser.
 *  **URL Params**
 
    **Required:**
- 
-   `customerAccountId=[Unique String ID]`
-   `ledgerName=[String]`
-   `timestamp=[Valid Date String]`
+   
+   ```
+    customerAccountId=[Unique String ID]
+    ledgerName=[String]
+    timestamp=[Valid Date String]
+   ```
 
 * **Success Response:**
 
