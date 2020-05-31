@@ -7,9 +7,10 @@ function isValidAccountParams(params) {
 }
 
 function isValidUpdateParams(params) {
-    if (!params.customerAccountId || !params.ledgerName || isNaN(params.newBalance)) {
+    if (!params.customerAccountId || !params.ledgerName || !params.timestamp || isNaN(params.newBalance)) {
         return false;
     }
+
     return true;
 }
 
@@ -31,15 +32,15 @@ function searchByDate(searchDate, ledgerHistory, ledgerName) {
     }
 
     result = {}
-    result[ledgerName] = ledgerHistory[i-1].balance;
-    result['timestamp'] = ledgerHistory[i-1].timestamp
+    result[ledgerName] = ledgerHistory[i - 1].balance;
+    result['timestamp'] = ledgerHistory[i - 1].timestamp
     return result
 }
 
 module.exports = function (app, collection) {
 
     app.get('/getCustomerAccountIds', (req, res) => {
-        collection.find({}).project({ _id: 0, customerAccountId: 1 }).toArray(function (err, documents) {
+        collection.find({}).project({ _id: 0, customerAccountId: 1 }).toArray((err, documents) => {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
             } else {
@@ -49,7 +50,7 @@ module.exports = function (app, collection) {
     });
 
     app.get('/getCustomerAccountData', (req, res) => {
-        collection.find({ customerAccountId: req.query.customerAccountId }).toArray(function (err, documents) {
+        collection.find({ customerAccountId: req.query.customerAccountId }).toArray((err, documents) => {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
             } else if (!documents[0]) {
@@ -61,7 +62,7 @@ module.exports = function (app, collection) {
     });
 
     app.get('/getCurrentLedgerBalances', (req, res) => {
-        collection.find({ customerAccountId: req.query.customerAccountId }).toArray(function (err, documents) {
+        collection.find({ customerAccountId: req.query.customerAccountId }).toArray((err, documents) => {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
                 return;
@@ -85,7 +86,7 @@ module.exports = function (app, collection) {
     });
 
     app.get('/getPreviousLedgerBalance', (req, res) => {
-        collection.find({ customerAccountId: req.query.customerAccountId }).toArray(function (err, documents) {
+        collection.find({ customerAccountId: req.query.customerAccountId }).toArray((err, documents) => {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
                 return;
@@ -113,7 +114,7 @@ module.exports = function (app, collection) {
     });
 
     app.get('/getLedgerBalanceByDate', (req, res) => {
-        collection.find({ customerAccountId: req.query.customerAccountId }).toArray(function (err, documents) {
+        collection.find({ customerAccountId: req.query.customerAccountId }).toArray((err, documents) => {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
                 return;
@@ -149,7 +150,7 @@ module.exports = function (app, collection) {
             return;
         }
 
-        currDate = new Date();
+        currDate = new Date(0);
         const accountInfo = {
             customerAccountId: req.body.customerAccountId,
             firstName: req.body.firstName,
@@ -209,16 +210,56 @@ module.exports = function (app, collection) {
             return;
         }
 
-        pushValue = {}
-        pushValue[`ledgers.${req.body.ledgerName}`] = { timestamp: new Date(), balance: parseInt(req.body.newBalance) }
+        date = getDate(req.body.timestamp);
+        if (date === null) {
+            res.send({ 'error': 'Invalid timestamp' });
+            return;
+        }
 
-        collection.update({ customerAccountId: req.body.customerAccountId }, { '$push': pushValue }, (err, results) => {
+        collection.find({ customerAccountId: req.body.customerAccountId }).toArray((err, documents) => {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
-            } else {
-                res.send(results);
+                return;
+            } 
+            
+            if (!documents[0]) {
+                res.send({ 'error': 'No such customer account found' });
+                return;
             }
+    
+            ledgers = documents[0].ledgers;
+            ledgerName = req.body.ledgerName;
+    
+            if (!ledgerName) {
+                res.send({ 'error': 'No ledger specified' });
+                return;
+            }
+    
+            if (!(ledgerName in ledgers)) {
+                res.send({ 'error': 'No such ledger found' });
+                return;
+            }
+    
+            if (date < getDate(ledgers[ledgerName].slice(-1)[0].timestamp)) {
+                res.send({ 'error': 'Dates must be sequential (backfilling is NOT allowed)' });
+                return;
+            }
+
+            pushValue = {}
+            pushValue[`ledgers.${req.body.ledgerName}`] = { timestamp: date, balance: parseInt(req.body.newBalance) }
+
+            collection.update({ customerAccountId: req.body.customerAccountId }, { '$push': pushValue }, (err, results) => {
+                if (err) {
+                    res.send({ 'error': 'A database error has occurred' });
+                } else {
+                    res.send(results);
+                }
+            });
         });
+        
+        
+
     });
+
 }
 
