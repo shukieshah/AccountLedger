@@ -25,7 +25,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
 ## GET request endpoints:
 
-#### getCustomerAccountIds
+### getCustomerAccountIds
 ----
   Returns json with all of the active Customer Account IDs in the database.
 
@@ -39,7 +39,13 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
 * **Success Response:**
 
-  * **Content:** `[{ "customerAccountId": "abcd1234" }, { "customerAccountId": "12345" }, { "customerAccountId": "abc12345" }]`
+  * **Content:** 
+  
+  ```[
+        { "customerAccountId": "abcd1234" }, 
+        { "customerAccountId": "12345" }, 
+        { "customerAccountId": "abc12345" }
+    ]```
  
 * **Error Response:**
 
@@ -51,7 +57,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
     curl -X GET http://18.212.100.191/getCustomerAccountIds
   ```
 
-#### getCustomerAccountData
+### getCustomerAccountData
 ----
   Returns json with all of the data and ledger history pertaining to a specific Customer Account.
 
@@ -138,7 +144,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
     curl -X GET http://18.212.100.191/getCustomerAccountData?customerAccountId=12345
   ```
 
-#### getCurrentLedgerBalances
+### getCurrentLedgerBalances
 ----
   Returns json with current balances of all available ledgers for a given Customer Account.
 
@@ -181,7 +187,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
     curl -X GET http://18.212.100.191/getCurrentLedgerBalances?customerAccountId=12345
   ```
 
-#### getPreviousLedgerBalance
+### getPreviousLedgerBalance
 ----
   Returns json with the previous balance of a specific ledger type (that differs from the current balance of that ledger type) for a given Customer Account.
 
@@ -222,7 +228,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
     curl -X GET http://18.212.100.191/getPreviousLedgerBalance?customerAccountId=12345&ledgerName=principal
   ```
 
-#### getLedgerBalanceByDate
+### getLedgerBalanceByDate
 ----
   Returns json with the balance of a specific ledger type given a specific date in the past. If there are no exact matches, the closest prior record will be returned.
 
