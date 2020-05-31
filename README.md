@@ -243,7 +243,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
 *  **URL Params**
 
    **Required:**
-   
+
    ```
     customerAccountId=[Unique String ID]
     ledgerName=[String]
@@ -278,4 +278,74 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
   ```
     curl -X GET http://18.212.100.191/getLedgerBalanceByDate?customerAccountId=12345&ledgerName=applicationFee&timestamp=2020-06-01
+  ```
+
+## POST request endpoints:
+
+### createCustomerAccount
+----
+  Creates a customer account in the database with the appropriate fields.
+
+* **URL**
+
+  /createCustomerAccount
+
+*  **Body Params**
+
+   **Required:**
+
+   ```
+    customerAccountId=[Unique String ID]
+    firstName=[String]
+    lastName=[String]
+   ```
+ 
+* **Error Response:**
+
+    * **Content:** `{ "error": "A database error has occurred" }`
+
+    OR
+
+    * **Content:** `{ 'error': 'Invalid or missing account parameters' }`
+
+* **Sample Call:**
+
+  ```
+    curl -X POST \
+    http://18.212.100.191/createCustomerAccount \
+    -d 'customerAccountId=asdfghjkl&firstName=Bob&lastName=Bobberman'
+  ```
+
+### updateLedgerBalance
+----
+  Creates a new record with the given balance and current timestamp for an existing OR new ledger type. This endpoint can be used to add and expand ledger types for a given Customer Account.
+
+* **URL**
+
+  /updateLedgerBalance
+
+*  **Body Params**
+
+   **Required:**
+
+   ```
+    customerAccountId=[Unique String ID]
+    ledgerName=[String]
+    newBalance=[Int]
+   ```
+
+* **Error Response:**
+
+    * **Content:** `{ "error": "A database error has occurred" }`
+
+    OR
+
+    * **Content:** `{ 'error': 'Invalid or missing parameters' }`
+
+* **Sample Call:**
+
+  ```
+    curl -X POST \
+    http://18.212.100.191/updateLedgerBalance \
+    -d 'customerAccountId=asdfghjkl&ledgerName=securityDeposit&newBalance=1250'
   ```
