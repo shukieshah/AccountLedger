@@ -284,7 +284,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
 ### createCustomerAccount
 ----
-  Creates a customer account in the database with the appropriate fields.
+  Creates a customer account in the database with default ledger values and timestamps.
 
 * **URL**
 
@@ -318,7 +318,9 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
 ### updateLedgerBalance
 ----
-  Creates a new record with the given balance and current timestamp for an existing OR new ledger type. This endpoint can be used to add and expand ledger types for a given Customer Account.
+  Creates a new record with the given balance and timestamp for an existing OR new ledger type. This endpoint can be used to add and expand ledger types for a given Customer Account. 
+
+  Note: The timestamp must be >= most recent update for the given ledger type. Records CANNOT be backfilled.
 
 * **URL**
 
@@ -332,6 +334,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
     customerAccountId=[Unique String ID]
     ledgerName=[String]
     newBalance=[Int]
+    timestamp=[Valid Date String]
    ```
 
 * **Error Response:**
@@ -340,12 +343,32 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
     OR
 
-    * **Content:** `{ 'error': 'Invalid or missing parameters' }`
+    * **Content:** `{ "error": "Invalid or missing parameters" }`
+
+    OR
+
+    * **Content:** `{ "error": "Invalid timestamp" }`
+
+    OR
+
+    * **Content:** `{ "error": "No such customer found" }`
+
+    OR
+
+    * **Content:** `{ "error": "No ledger specified" }`
+
+    OR
+
+    * **Content:** `{ "error": "No such ledger found" }`
+
+    OR
+
+    * **Content:** `{ "error": "Dates must be sequential (backfilling is NOT allowed)" }`
 
 * **Sample Call:**
 
   ```
     curl -X POST \
     http://18.212.100.191/updateLedgerBalance \
-    -d 'customerAccountId=asdfghjkl&ledgerName=securityDeposit&newBalance=1250'
+    -d 'customerAccountId=asdfghjkl&ledgerName=securityDeposit&newBalance=1250&timestamp=1998-01-04'
   ```
