@@ -220,23 +220,23 @@ module.exports = function (app, collection) {
             if (err) {
                 res.send({ 'error': 'A database error has occurred' });
                 return;
-            } 
-            
+            }
+
             if (!documents[0]) {
                 res.send({ 'error': 'No such customer account found' });
                 return;
             }
-    
+
             ledgers = documents[0].ledgers;
             ledgerName = req.body.ledgerName;
-    
+
             if ((ledgerName in ledgers) && (date < getDate(ledgers[ledgerName].slice(-1)[0].timestamp))) {
                 res.send({ 'error': 'Dates must be sequential (backfilling is NOT allowed)' });
                 return;
             }
 
             pushValue = {}
-            pushValue[`ledgers.${req.body.ledgerName}`] = { timestamp: date, balance: parseInt(req.body.newBalance) }
+            pushValue[`ledgers.${req.body.ledgerName}`] = { timestamp: date, balance: parseFloat(req.body.newBalance) }
 
             collection.update({ customerAccountId: req.body.customerAccountId }, { '$push': pushValue }, (err, results) => {
                 if (err) {
@@ -246,8 +246,8 @@ module.exports = function (app, collection) {
                 }
             });
         });
-        
-        
+
+
 
     });
 
