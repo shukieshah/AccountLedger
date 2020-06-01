@@ -6,6 +6,8 @@ AccountLedger is a REST API, written in [Node.js](https://nodejs.dev/), that tra
 
 The API is exposed and deployed on an AWS EC2 instance (public IP http://18.212.100.191). Clone this repository to experiment with or run the API locally.
 
+Alternatively, you can check out the [SamplePythonClient notebook](SamplePythonClient.ipynb) for code snippets and how to use the API for an example usecase.
+
 ## Instructions for Running Locally
 
 In order to run the API locally, ensure you have Node.js and npm installed.
