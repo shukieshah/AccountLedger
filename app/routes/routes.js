@@ -230,17 +230,7 @@ module.exports = function (app, collection) {
             ledgers = documents[0].ledgers;
             ledgerName = req.body.ledgerName;
     
-            if (!ledgerName) {
-                res.send({ 'error': 'No ledger specified' });
-                return;
-            }
-    
-            if (!(ledgerName in ledgers)) {
-                res.send({ 'error': 'No such ledger found' });
-                return;
-            }
-    
-            if (date < getDate(ledgers[ledgerName].slice(-1)[0].timestamp)) {
+            if ((ledgerName in ledgers) && (date < getDate(ledgers[ledgerName].slice(-1)[0].timestamp))) {
                 res.send({ 'error': 'Dates must be sequential (backfilling is NOT allowed)' });
                 return;
             }

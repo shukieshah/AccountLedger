@@ -86,45 +86,49 @@ Open http://localhost:3000 to test the endpoints in the browser.
         "ledgers": {
             "principal": [
                 {
-                    "timestamp": "2020-05-31T05:37:14.406Z",
+                    "timestamp": "1970-01-01T00:00:00.000Z",
                     "balance": 0
                 },
                 {
-                    "timestamp": "2020-06-01T09:14:10.209Z",
+                    "timestamp": "2020-05-31T09:14:10.209Z",
                     "balance": 1000
                 }
             ],
             "applicationFee": [
                 {
-                    "timestamp": "2020-05-31T05:37:14.406Z",
+                    "timestamp": "1970-01-01T00:00:00.000Z",
                     "balance": 0
                 },
                 {
-                    "timestamp": "2020-06-01T08:15:13.209Z",
+                    "timestamp": "2020-05-30T05:37:14.406Z",
                     "balance": 15
+                },
+                {
+                    "timestamp": "2020-05-31T08:15:13.209Z",
+                    "balance": 35
                 }
             ],
             "principalPaid": [
                 {
-                    "timestamp": "2020-05-31T05:37:14.406Z",
+                    "timestamp": "1970-01-01T00:00:00.000Z",
                     "balance": 0
                 }
             ],
             "interestFee": [
                 {
-                    "timestamp": "2020-05-31T05:37:14.406Z",
+                    "timestamp": "1970-01-01T00:00:00.000Z",
                     "balance": 0
                 }
             ],
             "interestFeePaid": [
                 {
-                    "timestamp": "2020-05-31T05:37:14.406Z",
+                    "timestamp": "1970-01-01T00:00:00.000Z",
                     "balance": 0
                 }
             ],
             "lateFees": [
                 {
-                    "timestamp": "2020-05-31T05:37:14.406Z",
+                    "timestamp": "1970-01-01T00:00:00.000Z",
                     "balance": 0
                 }
             ]
@@ -167,7 +171,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
   ```
     {
         "principal": 1000,
-        "applicationFee": 15,
+        "applicationFee": 35,
         "principalPaid": 0,
         "interestFee": 0,
         "interestFeePaid": 0,
@@ -234,7 +238,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
 ### getLedgerBalanceByDate
 ----
-  Returns json with the balance of a specific ledger type given a specific date in the past. If there are no exact matches, the closest prior record will be returned.
+  Returns json with the balance and timestamp of a specific ledger type given a specific date in the past. If there are no exact matches, the closest prior record will be returned.
 
 * **URL**
 
@@ -252,7 +256,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
 * **Success Response:**
 
-  * **Content:** `{ "applicationFee": 0 }`
+  * **Content:** `{ "applicationFee": 15, "timestamp": "2020-05-30T05:37:14.406Z" }`
  
 * **Error Response:**
 
@@ -277,7 +281,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
 * **Sample Call:**
 
   ```
-    curl -X GET http://18.212.100.191/getLedgerBalanceByDate?customerAccountId=12345&ledgerName=applicationFee&timestamp=2020-06-01
+    curl -X GET http://18.212.100.191/getLedgerBalanceByDate?customerAccountId=12345&ledgerName=applicationFee&timestamp=2020-05-31
   ```
 
 ## POST request endpoints:
@@ -318,7 +322,7 @@ Open http://localhost:3000 to test the endpoints in the browser.
 
 ### updateLedgerBalance
 ----
-  Creates a new record with the given balance and timestamp for an existing OR new ledger type. This endpoint can be used to add and expand ledger types for a given Customer Account. 
+  Appends a new record with the given balance and timestamp for an existing OR new ledger type. This endpoint can be used to add and expand ledger types for a given Customer Account.
 
   Note: The timestamp must be >= most recent update for the given ledger type. Records CANNOT be backfilled.
 
@@ -352,14 +356,6 @@ Open http://localhost:3000 to test the endpoints in the browser.
     OR
 
     * **Content:** `{ "error": "No such customer found" }`
-
-    OR
-
-    * **Content:** `{ "error": "No ledger specified" }`
-
-    OR
-
-    * **Content:** `{ "error": "No such ledger found" }`
 
     OR
 
